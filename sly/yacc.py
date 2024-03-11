@@ -126,16 +126,14 @@ class YaccProduction:
     @property
     def lineno(self):
         for tok in self._slice:
-            lineno = getattr(tok, 'lineno', None)
-            if lineno:
+            if lineno := getattr(tok, 'lineno', None):
                 return lineno
         raise AttributeError('No line number found')
 
     @property
     def index(self):
         for tok in self._slice:
-            index = getattr(tok, 'index', None)
-            if index is not None:
+            if (index := getattr(tok, 'index', None)) is not None:
                 return index
         raise AttributeError('No index attribute found')
 
@@ -143,8 +141,7 @@ class YaccProduction:
     def end(self):
         result = None
         for tok in self._slice:
-            r = getattr(tok, 'end', None)
-            if r:
+            if r := getattr(tok, 'end', None):
                 result = r
         return result
     
@@ -852,8 +849,7 @@ class Grammar(object):
         for n, p in enumerate(self.Productions):
             out.append(f'Rule {n:<5d} {p}')
         
-        unused_terminals = self.unused_terminals()
-        if unused_terminals:
+        if unused_terminals := self.unused_terminals():
             out.append('\nUnused terminals:\n')
             for term in unused_terminals:
                 out.append(f'    {term}')
@@ -1007,8 +1003,7 @@ class LRTable(object):
 
     def lr0_goto(self, I, x):
         # First we look for a previously cached entry
-        g = self.lr_goto_cache.get((id(I), x))
-        if g:
+        if g := self.lr_goto_cache.get((id(I), x)):
             return g
 
         # Now we generate the goto set in a way that guarantees uniqueness
@@ -1926,8 +1921,7 @@ class Parser(metaclass=ParserMeta):
         for sym, prod in undefined_symbols:
             errors += '%s:%d: Symbol %r used, but not defined as a token or a rule\n' % (prod.file, prod.line, sym)
 
-        unused_terminals = grammar.unused_terminals()
-        if unused_terminals:
+        if unused_terminals := grammar.unused_terminals():
             unused_str = '{' + ','.join(unused_terminals) + '}'
             cls.log.warning(f'Token{"(s)" if len(unused_terminals) >1 else ""} {unused_str} defined, but not used')
 
@@ -1968,17 +1962,15 @@ class Parser(metaclass=ParserMeta):
         Build the LR Parsing tables from the grammar
         '''
         lrtable = LRTable(cls._grammar)
-        num_sr = len(lrtable.sr_conflicts)
 
         # Report shift/reduce and reduce/reduce conflicts
-        if num_sr != getattr(cls, 'expected_shift_reduce', None):
+        if (num_sr := len(lrtable.sr_conflicts)) != getattr(cls, 'expected_shift_reduce', None):
             if num_sr == 1:
                 cls.log.warning('1 shift/reduce conflict')
             elif num_sr > 1:
                 cls.log.warning('%d shift/reduce conflicts', num_sr)
 
-        num_rr = len(lrtable.rr_conflicts)
-        if num_rr != getattr(cls, 'expected_reduce_reduce', None):
+        if (num_rr := len(lrtable.rr_conflicts)) != getattr(cls, 'expected_reduce_reduce', None):
             if num_rr == 1:
                 cls.log.warning('1 reduce/reduce conflict')
             elif num_rr > 1:

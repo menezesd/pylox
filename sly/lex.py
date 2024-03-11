@@ -283,8 +283,7 @@ class Lexer(metaclass=LexerMeta):
         for d in cls._remapping.values():
             remapped_toks.update(d.values())
             
-        undefined = remapped_toks - set(cls._token_names)
-        if undefined:
+        if undefined := remapped_toks - set(cls._token_names):
             missing = ', '.join(undefined)
             raise LexerBuildError(f'{missing} not included in token(s)')
 
@@ -404,8 +403,7 @@ class Lexer(metaclass=LexerMeta):
                 tok = Token()
                 tok.lineno = lineno
                 tok.index = index
-                m = _master_re.match(text, index)
-                if m:
+                if m := _master_re.match(text, index):
                     tok.end = index = m.end()
                     tok.value = m.group()
                     tok.type = m.lastgroup

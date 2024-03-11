@@ -29,8 +29,7 @@ class LoxContext:
             return self.interp.interpret(self.ast)
 
     def find_source(self, node):
-        indices = self.parser.index_position(node)
-        if indices:
+        if indices := self.parser.index_position(node):
             return self.source[indices[0]:indices[1]]
         else:
             return f'{type(node).__name__} (source unavailable)'

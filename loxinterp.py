@@ -67,8 +67,7 @@ class LoxClass:
 
     def __call__(self, *args):
         this = LoxInstance(self)
-        init = self.find_method('init')
-        if init:
+        if init := self.find_method('init'):
             init.bind(this)(*args)
         return this
 
