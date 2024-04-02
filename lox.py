@@ -8,7 +8,7 @@ import loxcontext
 
 def main(argv):
     if len(argv) > 2:
-        raise SystemExit(f'Usage: lox.py filename')
+        raise SystemExit('Usage: lox.py filename')
 
     context = loxcontext.LoxContext()
     if len(sys.argv) == 2:
